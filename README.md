@@ -7,10 +7,12 @@ HEX being more compact than decimal, the string in allocated memory will contain
 
 Another Forth word exists to convert the HEX-filled allocated memory string to binary. Said conversion happens in-place, overwriting the former HEX.
 
-Binary being unreadable, another Forth word is provided as will display binary contents as HEX. This it does by reading a byte, then displaying its lower and upper nibbles separately as 0 thru F.
+Binary being doubly more compact than HEX, twice as many leading zeros will remain in the allocated memory string. 
 
-Each colon definition has, in addition to customary stack map ( before -- after ) at top-of-line, also many a line-by-line stack map. Also many line-by-line text comments.
+Binary being unrepresentable in ASCII, yet another Forth word is provided for that. It will display binary contents as HEX. This it accomplishes by treating each byte as a pair of upper and lower nibbles. This it displays separately as 0 thru F.
 
-At end-of file is a Forth word inclosed between "0 [IF]" and "[THEN]" serving dual purposes: A) to prove out each stage of conversions and B) demonstrate usage.
+Each colon definition is annotated with line-by-line stack map and comments. I need these myself for purposes of maintenance.
+
+At end-of file is a Forth word serving dual purposes: A) to prove out each stage of conversions and B) demonstrate usage.
 
 A self-contained small file doing just those few things only.
