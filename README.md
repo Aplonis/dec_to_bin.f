@@ -1,16 +1,14 @@
 # dec_to_bin.f
 My own little stand-alone *.f file. 
 
-One word accepts a character string of arbitrary-length, allocates memory for it (aligned to CELLS), then fills it with the aforementioned string. This done it iterates between the two, filling the latter with a HEX string representing the same value.
+One Forth word accepts a character string of arbitrary-length containing just only 0 through 9 as a decimal value. Said word allocates memory of equal character length, filling same from right to left until both values are equal. 
 
-Know that conversion from decimal to HEX leaves leading zeros at the front the allocated string. A word is provided to facilitate tidy display by advancing the addr and reduce the count such that only the filled portion is represented.
+HEX being more compact than decimal, the allocated array will contain leading zeros. Another Forth word is therefor provided to facilitate tidy display without leading zeros. IT does this by advancing the addr and reducing the count such that only the filled portion is now represented.
 
-Another word exists to convert that same hex string to binary in place.
+Another Forth word exists to convert the allocated string (once filled with HEX) instead to binary. Said conversion happens in-place, overwriting the HEX.
 
-Know that the self-same allocated string is iterated over throughout. And so, in order to have both HEX and binary separately afterward, you will need to copy out the HEX before converting to binary. The original decimal string is left as found.
+Each colon definition has the not only the expected stack map ( before -- after ) at top, but also many a line-by-line stack map. Like so: ( during ). Those with also line-by-line text comments. Very nearly more comments than there is code.
 
-The file is annotated with stack maps ( before -- after ) at colon definitions, plus also stack maps ( during ) inside of those defitions. These with also verbose text comments.
-
-At end-of file is a test word serving dual purposes: A) to prove out each stage of conversions; and B) demonstrate usage.
+At end-of file is a Forth word inclosed between "0 [IF]" and "[THEN]" serving dual purposes: A) to prove out each stage of conversions and B) demonstrate usage.
 
 A self-contained small file doing just those few things only.
