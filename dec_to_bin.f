@@ -49,12 +49,10 @@
 ;
 
 \ Holder for addr of binary numeric array
-\ When allocated, will have leading zeros
-\ due to column reduction dec-to-bin
 0 VALUE a_bin 
 
-\ Convert decimal to binary
-: dec.to.hex       ( c-addr c carry_in -- c-addr c ) 
+\ Convert decimal to hex
+: num.to.hex       ( c-addr c carry_in -- c-addr c ) 
   0 2 PICK 1- DO   \ Iterate array right-to-left
     I a_bin +      ( c-addr c c addr_h )
     DUP C@ 10 *    ( c-addr c c addr_h raw )
@@ -70,10 +68,10 @@
 : str.to.dec         ( c-addr c -- )
   DUP 0 DO           \ Iterate string left-to-right
     OVER I + C@ 48 - \ ASCII char to decimal number
-    dec.to.hex       ( c-addr c )
+    num.to.hex       ( c-addr c )
   LOOP
   NIP
-  a_bin SWAP     ( c-addr c ) \ Contains binary
+  a_bin SWAP         ( c-addr c ) \ Contains binary
 ;
 
 \ Adjust allocation reqest to align with CELLS.
@@ -142,7 +140,7 @@
 1 [IF] \ Set non-zero to test
 
   : test.dec.hex.bin
-    CR CR ." Testing dec.bin ... "
+    CR CR ." Testing dec.to.hex & hex.to.bin ... "
     CR ." Reading in ASCII string below. "
     CR S" 340193404210632335760508365704335069440" 2DUP TYPE
     CR ." Converting above to hex. "
