@@ -9,10 +9,10 @@ Another Forth word exists to convert the HEX-filled allocated memory string to b
 
 Binary being doubly more compact than HEX, twice as many leading zeros will remain in the allocated memory string. 
 
-Binary being unrepresentable in ASCII, yet another Forth word is provided for that. It will display binary contents as HEX. This it accomplishes by treating each byte as a pair of upper and lower nibbles. This it displays separately as 0 thru F.
+Binary being unrepresentable in ASCII, yet another Forth word is provided for that. It will display binary contents as HEX. This it accomplishes by treating each byte as a pair of upper and lower nibbles. These it displays separately as 0 thru F for each byte.
 
-Each colon definition is annotated with line-by-line stack map and comments. I need these myself for purposes of maintenance.
+Each Fort word is copiously annotated with line-by-line stack map and comments. I need these myself for purposes of maintenance.
 
-At end-of file is a Forth word serving dual purposes: A) to prove out each stage of conversions and B) demonstrate usage.
+Finally, at end-of file is a Forth word serving dual purposes: A) to prove out each stage of conversion; and B) demonstrate usage.
 
-A self-contained small file doing just those few things only.
+A small file doing just those very few things only.
