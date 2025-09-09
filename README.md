@@ -1,12 +1,16 @@
 # dec_to_bin.f
 My own little stand-alone *.f file. 
 
-It accepts a character string of arbitrary-length, allocates memory of equal length (aligned to CELLS), then fills it with the same value represented as a HEX string.
+One word accepts a character string of arbitrary-length, allocates memory for it (aligned to CELLS), then fills it with the aforementioned string. This done it iterates between the two, filling the latter with a HEX string representing the same value.
 
-After conversiont to a HEX string, leading zeros will remain. Therefor a word is provided to convert the address and count exempting of those for tidy display.
+Know that conversion from decimal to HEX leaves leading zeros at the front the allocated string. A word is provided to facilitate tidy display by advancing the addr and reduce the count such that only the filled portion is represented.
 
-Will also convert same hex string to binary. The same string is used for all. So must copy out if wanting HEX and BIN separately.
+Another word exists to convert that same hex string to binary in place.
 
-The file is copiously annotated with stack maps ( before -- after ) and descriptive comments.
+Know that the self-same allocated string is iterated over throughout. And so, in order to have both HEX and binary separately afterward, you will need to copy out the HEX before converting to binary. The original decimal string is left as found.
 
-A small file doing just those three things only.
+The file is annotated with stack maps ( before -- after ) at colon definitions, plus also stack maps ( during ) inside of those defitions. These with also verbose text comments.
+
+At end-of file is a test word serving dual purposes: A) to prove out each stage of conversions; and B) demonstrate usage.
+
+A self-contained small file doing just those few things only.
