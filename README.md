@@ -1,5 +1,5 @@
 # dec_to_bin.f
-My own little stand-alone *.f file. 
+My own little stand-alone *.f file. Tested in VXF Forth, SwiftForth, and gForth.
 
 One Forth word, `dec.to.hex`, accepts a character string of arbitrary-length containing just only 0 through 9 as a decimal value. Said word allocates memory of equal character length, filling same from right to left with ASCII HEX characters until both values are equal. 
 
