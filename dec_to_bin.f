@@ -2,8 +2,7 @@
 \ Decimal strings of arbitray length to hex or binary array
 \ Version 2025-09-10 Copyright Gan Uesli Starling
 
-
-: ~~ CR ." LINE " . ( u -- ) .S KEY DROP ; \ For troubleshooting
+\ : ~~ CR ." LINE " . ( u -- ) .S KEY DROP ; \ For troubleshooting
 
 \ Reformat addr & count sans leading zeros
 : hide.zeros ( c-addr c -- c-addr c )
