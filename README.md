@@ -1,9 +1,9 @@
 # dec_to_bin.f
 My own little stand-alone *.f file. Tested in VXF Forth, SwiftForth, and gForth.
 
-One Forth word, `dec.to.hex`, accepts a character string of arbitrary-length containing just only 0 through 9 as a decimal value. Said word allocates memory of equal character length, filling same from right to left with ASCII HEX characters until both values are equal. 
+The main Forth word, `dec.to.hex`, accepts a character string of arbitrary-length containing just only 0 through 9 as a decimal value. Said word allocates memory of equal character length, filling same from right to left with ASCII HEX characters until both values are equal. 
 
-HEX being more compact than decimal, the string in allocated memory will contain leading zeros. Tidy display without leading zeros can be enjoyed via a second Forth word, `hide.zeros`, also provided. It consumes addr & count, returning a new addr & count such as represent the string without leading zeros. This while not affeting the string itself in any way.
+HEX being more compact than decimal, the string in allocated memory will contain leading zeros. Tidy display without leading zeros can be enjoyed via a second Forth word, `hide.zeros`, also provided. It consumes addr & count, returning a new addr & count such as represent the string without leading zeros. This while not affecting the string itself in any way.
 
 A third Forth word, `hex.to.bin`, exists to convert the HEX-filled string to binary. Said conversion happens in-place, overwriting the former HEX.
 
