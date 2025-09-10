@@ -15,4 +15,4 @@ Each colon definition is copiously annotated line-by-line stack maps and comment
 
 Finally, at end-of file is a Forth word, `test.dec.hex.bin`, serving dual purposes: A) to prove out each stage of conversion; and B) demonstrate usage.
 
-A small file doing just those very few things only.
+A small file doing just only those few things.
