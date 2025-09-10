@@ -45,33 +45,28 @@
     nibble.to.hex EMIT  ( addr )     \ Lower nibble displayed
   LOOP
  DROP
-
 ;
 
-\ Holder for addr of binary numeric array
-0 VALUE a_bin 
-
 \ Convert decimal to hex
-: num.to.hex       ( c-addr c carry_in -- c-addr c ) 
-  0 2 PICK 1- DO   \ Iterate array right-to-left
-    I a_bin +      ( c-addr c c addr_h )
-    DUP C@ 10 *    ( c-addr c c addr_h raw )
-    ROT +          ( c-addr c addr-h raw+c ) 
-    DUP 16 MOD     ( c-addr c addr-h raw+c raw+c%16 )
-    ROT C!         ( c-addr c raw )
-    16 /           ( c-addr c carry_out )
+: num.to.hex       ( c-addr c a-addr carry_in -- c-addr c ) 
+  0 3 PICK 1- DO   ( c-addr c a-addr carry_in )       \ Iterate array right-to-left
+    OVER I +       ( c-addr c a-addr c addr_h )
+    DUP C@ 10 *    ( c-addr c a-addr c addr_h raw )
+    ROT +          ( c-addr c a-addr addr-h raw+c ) 
+    DUP 16 MOD     ( c-addr c a-addr addr-h raw+c raw+c%16 )
+    ROT C!         ( c-addr c a-addr raw )
+    16 /           ( c-addr c a-addr carry_out )
   -1 +LOOP
-  DROP
+  DROP             ( c-addr c a-addr )
 ;
 
 \ Parse string for chars, offseting from ASCII
-: str.to.dec         ( c-addr c -- )
-  DUP 0 DO           \ Iterate string left-to-right
-    OVER I + C@ 48 - \ ASCII char to decimal number
-    num.to.hex       ( c-addr c )
+: str.to.dec           ( c-addr c a-addr -- ) 
+  OVER 0 DO            ( c-addr c a-addr )     \ Iterate string left-to-right
+    2 PICK I + C@ 48 - ( c-addr c a-addr c )   \ ASCII char to decimal number
+    num.to.hex         ( c-addr c a-addr )
   LOOP
-  NIP
-  a_bin SWAP         ( c-addr c ) \ Contains binary
+  ROT DROP SWAP        ( a-addr c )
 ;
 
 \ Adjust allocation reqest to align with CELLS.
@@ -81,15 +76,16 @@
 
 \ Consume ASCII string & count
 \ Return binary array & count. Will have leading zeros.
-: dec.to.hex ( c-addr c -- c-addr c ) 
-  DUP align.alloc
-  ALLOCATE 0= IF    ( c-addr c )
-    TO a_bin            ( c-addr c ) \ Store addr
-    a_bin OVER ERASE    ( c-addr c ) \ Fill with zeros
-    str.to.dec          ( c-addr c -- c-addr c )
+: dec.to.hex ( c-addr c -- c-addr c )  
+  DUP align.alloc                           
+  ALLOCATE
+  0= IF                 ( c-addr c a-addr )
+    2DUP SWAP ERASE     ( c-addr c a-addr ) 
+    str.to.dec          ( c-addr c a-addr -- c-addr c )     
   ELSE 
     2DROP
     CR ." Oops! Memory not successfully allocated in word dec.hex. "
+    ABORT
   THEN 
 ;
 
