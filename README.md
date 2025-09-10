@@ -9,6 +9,8 @@ A third Forth word, `hex.to.bin`, exists to convert the HEX-filled string to bin
 
 Binary being unrepresentable in ASCII, yet another Forth word is provided to deal with that. Said word displays binary contents as HEX. This is accomplished by treating each byte instead as a pair of upper and lower nibbles. These it displays separately as 0 thru F. Thus for any given string, converted first to HEX characters, then afterward to binary, a display of its contents at each stage will appear identical. Provided, that is, the correct display word was employed: either `hex.show` or `bin.show`, as appropriate.
 
+A convenience word, `dec.to.bin` will cascade `dec.to.hex` and `hex.to.bin` as a one-word command.
+
 Each colon definition is copiously annotated line-by-line stack maps and comments. I need these myself for purposes of maintenance.
 
 Finally, at end-of file is a Forth word, `test.dec.hex.bin`, serving dual purposes: A) to prove out each stage of conversion; and B) demonstrate usage.
