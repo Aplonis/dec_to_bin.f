@@ -1,6 +1,9 @@
 \ dec_to_bin.f
-\ Decimal strings of arbitray length to binary array
-\ Version 2025-09-09 Copyright Gan Uesli Starling
+\ Decimal strings of arbitray length to hex or binary array
+\ Version 2025-09-10 Copyright Gan Uesli Starling
+
+
+: ~~ CR ." LINE " . ( u -- ) .S KEY DROP ; \ For troubleshooting
 
 \ Reformat addr & count sans leading zeros
 : hide.zeros ( c-addr c -- c-addr c )
@@ -41,7 +44,16 @@
   0 DO                  ( addr )
     DUP I + C@          ( addr c )   \ Curent byte
     DUP 4 RSHIFT        ( addr c c ) \ Upper nibble now lower
-    nibble.to.hex EMIT  ( addr c )   \ Upper nibble displayed
+    nibble.to.hex
+    I 0= IF             \ Left-most nibble of left-most digit?
+      DUP 48 = IF       \ ASCII zero char?
+        DROP
+      ELSE
+        EMIT
+      THEN
+    ELSE
+      EMIT              \ Not left-most. Always display.
+    THEN
     nibble.to.hex EMIT  ( addr )     \ Lower nibble displayed
   LOOP
  DROP
@@ -94,7 +106,7 @@
 \ Odd addrs left as found: garbage.
 : hex.bin.merge   ( c-addr c -- c-addr c )
   2DUP + 1-       ( c-addr c addr )            \ Right-most adder
-  OVER 1- 0 DO       ( c-addr c addr )
+  OVER 1- 0 DO    ( c-addr c addr )
     DUP I -       ( c-addr c addr addr )       \ Current adder
     DUP 1-        ( c-addr c addr addr addr )  \ Addr left of current
     C@ 4 LSHIFT   ( c-addr c addr addr c )     \ Promote to high nibble
@@ -106,8 +118,8 @@
 
 \ Squeeze out garbage-holding odd-addrs left by hex.bin.merge
 : hex.bin.shrink   ( c-addr c -- c-addr c )
-  2DUP + 1-        ( c-addr c addr )       \ Right-most byte
-  OVER 2 / 0 DO
+  2DUP + 1-        ( c-addr c addr )       \ Right-most addr
+  OVER 2 / 1+ 0 DO
     DUP I -        ( c-addr c addr addr )  \ Store-to addr
     OVER I 2 * -   ( c-addr c addr addr )  \ Fetch-from addr
     C@ SWAP C!
@@ -117,7 +129,7 @@
 
 \ Erase garbage-holding top addrs left hex.bin.shrink
 : hex.bin.clear    ( c-addr c -- c-addr c )
-  DUP 2 / 1+ 0 DO  ( c-addr c )
+  DUP 2 / 0 DO  ( c-addr c )
     0 2 PICK I +   ( c-addr c 0 addr )
     C!
   LOOP
@@ -200,6 +212,33 @@
       ." Curses! An error while trying to free allocated memory. " 
   [THEN]
   CR ." Done. " CR CR
+  
+  : test.special
+    CR CR ." Double-checking special cases."
+    CR ." HEX: " S" 255"  2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 255"  2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 256"  2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 256"  2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 512"  2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 512"  2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 513"  2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 513"  2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 1024" 2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 1024" 2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 1025" 2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 1025" 2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 2048" 2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 2048" 2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 2049" 2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 2049" 2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 4095" 2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 4095" 2DUP TYPE ."  = " dec.to.bin bin.show CR
+    CR ." HEX: " S" 4096" 2DUP TYPE ."  = " dec.to.hex hex.show
+    CR ." BIN: " S" 4096" 2DUP TYPE ."  = " dec.to.bin bin.show
+    CR ." Done. " CR CR
+  ;
+  
+  test.special
 
 [THEN]
 
