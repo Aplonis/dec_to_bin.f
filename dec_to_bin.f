@@ -2,7 +2,7 @@
 \ Decimal strings of arbitray length to hex or binary array
 \ Version 2025-09-10 Copyright Gan Uesli Starling
 
-\ : ~~ CR ." LINE " . ( u -- ) .S KEY DROP ; \ For troubleshooting
+: ?? CR ." LINE " . ( u -- ) .S KEY DROP ; \ For troubleshooting
 
 \ Reformat addr & count sans leading zeros
 : hide.zeros ( c-addr c -- c-addr c )
@@ -109,7 +109,7 @@
     DUP I -       ( c-addr c addr addr )       \ Current adder
     DUP 1-        ( c-addr c addr addr addr )  \ Addr left of current
     C@ 4 LSHIFT   ( c-addr c addr addr c )     \ Promote to high nibble
-    OVER C@ OR    ( c-addr c addr addr c )     \ Two now a byte
+    OVER C@ OR    ( c-addr c addr addr c )     \ Two nibbles into a byte
     SWAP C!       ( c-addr c addr )            \ Store even addr
   2 +LOOP
   DROP
@@ -136,9 +136,11 @@
 
 \ Remove the leading zero of each HEX byte.
 : hex.to.bin ( c-addr c -- c-addr c )
-  hex.bin.merge   \ Merge adjacent nibble-bytes into whole bytes
-  hex.bin.shrink  \ Move whole bytes from even-addrs to adjacent
-  hex.bin.clear   \ Zero out left-over nibble-bytes
+  DUP 1 > IF
+    hex.bin.merge
+    hex.bin.shrink  \ Move whole bytes from even-addrs to adjacent
+    hex.bin.clear   \ Zero out left-over nibble-bytes
+  THEN
 ;
 
 \ Convert ASCII decimal string to allocated binary array.
@@ -201,7 +203,7 @@
 
   test.dec.to.bin
    
-  CR CR ." A final test, this time interpreted outside any colon definition. "
+  CR CR ." Testing dec.to.bin under interpreted mode (outside any colon definition). "
   S" 340193404210632335760508365704335069440" 
   CR 2DUP TYPE
   dec.to.bin 
@@ -211,34 +213,35 @@
       ." Curses! An error while trying to free allocated memory. " 
   [THEN]
   CR ." Done. " CR CR
-  
-  : test.special
-    CR CR ." Double-checking special cases."
-    CR ." HEX: " S" 255"  2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 255"  2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 256"  2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 256"  2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 512"  2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 512"  2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 513"  2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 513"  2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 1024" 2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 1024" 2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 1025" 2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 1025" 2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 2048" 2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 2048" 2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 2049" 2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 2049" 2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 4095" 2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 4095" 2DUP TYPE ."  = " dec.to.bin bin.show CR
-    CR ." HEX: " S" 4096" 2DUP TYPE ."  = " dec.to.hex hex.show
-    CR ." BIN: " S" 4096" 2DUP TYPE ."  = " dec.to.bin bin.show
-    CR ." Done. " CR CR
+
+  : test.small.ints.sub ( u -- u )
+    CR ." Decimal: " DUP . ." = " DUP ABS 0 <# #S #> 
+    dec.to.hex 2DUP hex.show ."  HEX " 
+    DROP FREE DROP
+    CR ." Decimal: " DUP . ." = " DUP ABS 0 <# #S #> 
+    dec.to.bin 2DUP bin.show ."  Binary" 
+    DROP FREE DROP  
   ;
   
-  test.special
-
+  : test.small.ints
+    CR CR ." Test runs on small integers. 
+    CR ." Note: Binary values display as HEX, so ought appear identical." 
+    8
+    BEGIN
+      DUP 65536 <
+    WHILE
+      test.small.ints.sub
+      CR
+      1+
+      test.small.ints.sub
+      CR
+      1- 1 LSHIFT
+    REPEAT
+    DROP
+  ;
+  
+\  test.small.ints
+  
 [THEN]
 
 
