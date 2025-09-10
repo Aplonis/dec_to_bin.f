@@ -130,10 +130,13 @@
   hex.bin.clear   \ Zero out left-over nibble-bytes
 ;
 
-\ Uncomment to test interpretation mode
-\ CR S" 340193404210632335760508365704335069440" dec.bin hex.show
+\ Convert ASCII decimal string to allocated binary array.
+: dec.to.bin ( c-addr c -- c-addr c )
+  dec.to.hex
+  hex.to.bin
+;
 
-1 [IF] \ Set non-zero to test
+1 [IF] \ Set left-most to zero to skip tests. To 1 to run tests.
 
   : test.dec.hex.bin
     CR CR ." Testing dec.to.hex & hex.to.bin ... "
@@ -166,6 +169,37 @@
   ;
 
   test.dec.hex.bin
+
+  : test.dec.to.bin 
+    CR CR ." Testing dec.to.bin ... "
+    CR ." Reading in ASCII string below. "
+    CR S" 340193404210632335760508365704335069440" 2DUP TYPE
+    CR ." Converting above to bin. "
+    CR ." Desired result of conversion shown as CHAR string below. "
+    CR ." FFEEDDCCBBAA99887766554433221100 "
+    dec.to.bin
+    CR 2DUP bin.show
+    CR ." Resulting binary string displayed as HEX above. Should also match. "
+    CR ." Will now release allocated memory. No error is expected. "
+    DROP 
+    FREE 0<> IF 
+      ." Curses! The unexpected error occurred. " 
+    THEN
+    CR ." Done. " CR CR
+  ;
+
+  test.dec.to.bin
+   
+  CR CR ." A final test, this time interpreted outside any colon definition. "
+  S" 340193404210632335760508365704335069440" 
+  CR 2DUP TYPE
+  dec.to.bin 
+  CR 2DUP bin.show
+  CR ." Now to free allocated memory. "
+  DROP FREE 0<> [IF] 
+      ." Curses! An error while trying to free allocated memory. " 
+  [THEN]
+  CR ." Done. " CR CR
 
 [THEN]
 
